@@ -2,136 +2,137 @@ package xyz.cedarjo.array;
 
 public class Array<E> {
 
-    private E[] array;
+    private E[] data;
+
+    private int capacity;
 
     private int size;
 
     public Array() {
-        array = (E[]) new Object[10];
-        size = 0;
+        this.capacity = 8;
+        this.size = 0;
+        this.data = (E[]) new Object[this.capacity];
     }
 
     public Array(int capacity) {
-        if (capacity <= 0) {
-            throw new IllegalArgumentException("can't init array with zero capacity");
-        }
-        array = (E[]) new Object[capacity];
-        size = 0;
-    }
-
-    public int getSize() {
-        return size;
+        this.capacity = capacity;
+        this.size = 0;
+        this.data = (E[]) new Object[this.capacity];
     }
 
     public int getCapacity() {
-        return array.length;
+        return this.capacity;
+    }
+
+    public int getSize() {
+        return this.size;
     }
 
     public boolean isEmpty() {
-        return size == 0;
-    }
-
-    public void set(int index, E e) {
-        if (index < 0 || index >= size) {
-            throw new IllegalArgumentException("out of size");
-        }
-        array[index] = e;
+        return this.size == 0;
     }
 
     public void add(int index, E e) {
-        if (index < 0 || index > size) {
-            throw new IllegalArgumentException("out of size");
+        // index 需要满足 [0, size]
+        if (!(index >= 0 && index <= size)) {
+            throw new IllegalArgumentException("越界");
         }
-        // 满时加倍
-        if (size == array.length) {
-            resize(size << 1);
+        // 将[index, size)位置后移，腾出index
+        for (int i = size; i > index; i--) {
+            data[i] = data[i - 1];
         }
-        for (int i = size - 1; i >= index; i--) {
-            array[i + 1] = array[i];
-        }
-        array[index] = e;
+        // size加一
         size++;
-    }
-
-    public E remove(int index) {
-        if (index < 0 || index >= size) {
-            throw new IllegalArgumentException("out of size");
+        // 赋值index
+        data[index] = e;
+        // 使用量满后翻倍
+        if (size == capacity) {
+            resize(capacity << 1);
         }
-        E ret = array[index];
-        for (int i = index; i < size - 1; i++) {
-            array[i] = array[i + 1];
-        }
-        size--;
-        array[size] = null;
-
-        // 到1/4时再缩减
-        if (size == (array.length >> 2) && (array.length >> 1) > 0) {
-            resize(array.length >> 1);
-        }
-
-        return ret;
     }
-
-    public boolean contains(E e) {
-        return indexOf(e) != -1;
-    }
-
-    public int indexOf(E e) {
-        for (int i = 0; i < size; i++) {
-            if (array[i].equals(e)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public E get(int index) {
-        if (index < 0 || index >= size) {
-            throw new IllegalArgumentException("out of size");
-        }
-        return array[index];
-    }
-
 
     public void addFirst(E e) {
         add(0, e);
-    }
-
-    public E removeFirst() {
-        return remove(0);
     }
 
     public void addLast(E e) {
         add(size, e);
     }
 
+    public E remove(int index) {
+        // index 需要满足 [0, size)
+        if (!(index >= 0 && index < size)) {
+            throw new IllegalArgumentException("越界");
+        }
+        // 取出index作为返回值
+        E rst = data[index];
+        // 将[index+1, size)位置前移，覆盖index
+        for (int i = index + 1; i < size; i++) {
+            data[i - 1] = data[i];
+        }
+        // 将size-1位置置为null，便于gc
+        data[size - 1] = null;
+        // size减一
+        size--;
+        // 使用量为1/4时减半
+        if (size == (capacity >> 2) && (capacity >> 1) > 0) {
+            resize(capacity >> 1);
+        }
+        return rst;
+    }
+
+    public E removeFirst() {
+        return remove(0);
+    }
+
     public E removeLast() {
         return remove(size - 1);
     }
 
-    public void swap(int i, int j) {
-        if (i < 0 || i >= size) {
-            throw new IllegalArgumentException("out of size");
+    private void resize(int capacity) {
+        E[] replaceData = (E[]) new Object[capacity];
+        // resize操作可能是大变小或小变大，例如原容量100改为50，就只拷贝前50条；原容量50改为100，也是只拷贝前50条
+        int copy = Math.min(this.capacity, capacity);
+        for (int i = 0; i < copy; i++) {
+            replaceData[i] = this.data[i];
         }
-        if (j < 0 || j >= size) {
-            throw new IllegalArgumentException("out of size");
-        }
-        if (i == j) {
-            return;
-        }
-        E temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
+        this.data = replaceData;
+        this.capacity = capacity;
     }
 
-    private void resize(int capacity) {
-        E[] newArray = (E[]) new Object[capacity];
-        // 拷贝
-        int newLength = Math.min(capacity, array.length);
-        for (int i = 0; i < newLength; i++) {
-            newArray[i] = array[i];
+    public E set(int index, E e) {
+        // index 需要满足[0, size)
+        if (!(index >= 0 && index < size)) {
+            throw new IllegalArgumentException("越界");
         }
-        array = newArray;
+        // 获取被替换的元素
+        E oldElement = data[index];
+        data[index] = e;
+        return oldElement;
     }
-    
+
+    public void swap(int indexA, int indexB) {
+        // index 需要满足[0, size)
+        if (!(indexA >= 0 && indexA < size
+                && indexB >= 0 && indexB < size)) {
+            throw new IllegalArgumentException("越界");
+        }
+        E foo = data[indexA];
+        data[indexA] = data[indexB];
+        data[indexB] = foo;
+    }
+
+    public int indexOf(E e) {
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].equals(e)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public boolean contains(E e) {
+        return indexOf(e) >= 0;
+    }
+
 }
