@@ -117,6 +117,26 @@ public class Linked<E> {
         return false;
     }
 
+    public E get(int index) {
+        // index 范围[0, size)
+        if (!(index >= 0 && index < size)) {
+            throw new IllegalArgumentException("越界");
+        }
+        Node preNode = dummyHead;
+        for (int i = 0; i < index; i++) {
+            preNode = preNode.next;
+        }
+        return preNode.next.e;
+    }
+
+    public E getFirst() {
+        return get(0);
+    }
+
+    public E getLast() {
+        return get(this.size - 1);
+    }
+
     public void swap(int indexA, int indexB) {
         // index 范围[0, size)
         if (!(indexA >= 0 && indexA < size
