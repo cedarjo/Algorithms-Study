@@ -67,7 +67,15 @@ public class Linked<E> {
     }
 
     public void addLast(E e) {
-        add(this.size, e);
+        // add(this.size, e);
+        if (isEmpty()) {
+            addFirst(e);
+        } else {
+            Node tailNode = new Node(e, null);
+            this.tail.next = tailNode;
+            this.tail = tailNode;
+            this.size++;
+        }
     }
 
     public E remove(int index) {
@@ -145,6 +153,7 @@ public class Linked<E> {
     }
 
     public E getLast() {
+        // return get(this.size - 1);
         return this.tail == null ? null : this.tail.e;
     }
 
