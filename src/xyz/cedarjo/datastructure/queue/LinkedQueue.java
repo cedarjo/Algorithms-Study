@@ -1,6 +1,6 @@
-package xyz.cedarjo.queue;
+package xyz.cedarjo.datastructure.queue;
 
-import xyz.cedarjo.linked.Linked;
+import xyz.cedarjo.datastructure.linked.Linked;
 
 public class LinkedQueue<E> implements Queue<E> {
 

@@ -1,4 +1,4 @@
-package xyz.cedarjo.queue;
+package xyz.cedarjo.datastructure.queue;
 
 public class ArrayCircularQueue<E> implements Queue<E> {
 

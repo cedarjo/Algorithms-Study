@@ -1,4 +1,4 @@
-package xyz.cedarjo.heap;
+package xyz.cedarjo.datastructure.heap;
 
 import java.util.ArrayList;
 import java.util.Arrays;

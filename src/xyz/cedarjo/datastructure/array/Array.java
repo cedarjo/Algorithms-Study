@@ -1,4 +1,4 @@
-package xyz.cedarjo.array;
+package xyz.cedarjo.datastructure.array;
 
 public class Array<E> {
 

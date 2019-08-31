@@ -1,6 +1,6 @@
-package xyz.cedarjo.stack;
+package xyz.cedarjo.datastructure.stack;
 
-import xyz.cedarjo.linked.Linked;
+import xyz.cedarjo.datastructure.linked.Linked;
 
 public class LinkedStack<E> implements Stack<E> {
 

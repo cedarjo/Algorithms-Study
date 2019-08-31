@@ -1,4 +1,4 @@
-package xyz.cedarjo.linked;
+package xyz.cedarjo.datastructure.linked;
 
 public class Linked<E> {
 

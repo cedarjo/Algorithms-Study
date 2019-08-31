@@ -1,4 +1,4 @@
-package xyz.cedarjo.stack;
+package xyz.cedarjo.datastructure.stack;
 
 import java.util.ArrayList;
 
