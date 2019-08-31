@@ -6,12 +6,23 @@ public class LinkedStack<E> implements Stack<E> {
 
     private Linked<E> linked;
 
+    private int capacity;
+
     public LinkedStack() {
+        this(8);
+    }
+
+    public LinkedStack(int capacity) {
+        this.capacity = capacity;
         this.linked = new Linked<>();
     }
 
     @Override
     public boolean push(E e) {
+        if (linked.getSize() == capacity) {
+            // 栈满
+            return false;
+        }
         linked.addLast(e);
         return true;
     }

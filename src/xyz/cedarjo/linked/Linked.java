@@ -22,10 +22,13 @@ public class Linked<E> {
 
     private Node dummyHead; // 虚拟头节点
 
+    private Node tail;
+
     private int size;
 
     public Linked() {
         this.dummyHead = new Node();
+        this.tail = null;
         this.size = 0;
     }
 
@@ -51,6 +54,10 @@ public class Linked<E> {
         // 添加后的结构 preNode -> newNode -> indexNode -> node
         Node newNode = new Node(e, preNode.next);
         preNode.next = newNode;
+        // 维护tail
+        if (this.size == index) {
+            this.tail = newNode;
+        }
         // 维护size
         this.size++;
     }
@@ -78,6 +85,10 @@ public class Linked<E> {
         Node removeNode = preNode.next;
         preNode.next = removeNode.next;
         removeNode.next = null; // gc
+        // 维护tail
+        if (index == this.size - 1) {
+            tail = preNode;
+        }
         // 维护size
         this.size--;
         return removeNode.e;
@@ -134,7 +145,7 @@ public class Linked<E> {
     }
 
     public E getLast() {
-        return get(this.size - 1);
+        return this.tail == null ? null : this.tail.e;
     }
 
     public void swap(int indexA, int indexB) {
@@ -170,9 +181,18 @@ public class Linked<E> {
         bNode.next = nextA;
         preB.next = aNode;
         aNode.next = nextB;
+
+        // 维护tail
+        if (indexA == this.size - 1) {
+            tail = bNode;
+        } else if (indexB == this.size - 1) {
+            tail = aNode;
+        }
     }
 
     public void reverse() {
+        // 维护tail
+        tail = dummyHead.next;
         // 起始状态 A -> B -> C -> D
         // 中间状态 A <- B    C -> D
         // 下一步后 A <- B <- C    D
