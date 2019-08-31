@@ -1,5 +1,5 @@
 # Sort
-
+默认都将升序（从小到大）<br/>
 [数组排序（JAVA）](https://blog.csdn.net/cedarjo/article/details/88649094)
 
 + 时间复杂度为O(n<sup>2</sup>)
