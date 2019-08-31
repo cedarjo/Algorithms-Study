@@ -4,28 +4,25 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 /**
- * 选择排序
- * 0: [0, length)取最小元素，与0交换
- * 1: [1, length)取最小元素，与1交换
+ * 冒泡排序
+ * 0: [0, length)从左到右两两比较，升序不变，逆序则交换，最终 length-1位置得到最大元素
+ * 1: [0, length-1)从左到右两两比较，升序不变，逆序则交换，最终 length-2位置得到最大元素
  * ...
- * i: [i, length)取最小元素，与i交换
- * 直到i=length-2
+ * i: [0, length-i)从左到右两两比较，升序不变，逆序则交换，最终 length-i-1位置得到最大元素
+ * 直到length-i=2，即i=length-2
  */
-public class SelectionSort {
+public class BubbleSort {
 
     public <E> void sort(E[] array, Comparator<E> comparator) {
         int length = array.length;
         for (int i = 0; i < length - 1; i++) {
-            // 取[i, length)的最小值，与i交换
-            E min = array[i];
-            int minIndex = i;
-            for (int j = i + 1; j < length; j++) {
-                if (comparator.compare(array[j], min) < 0) {
-                    min = array[j];
-                    minIndex = j;
+            // [0, length-i) 从左到右两两比较，逆序则交换
+            for (int j = 1; j < length - i; j++) {
+                // 比较 array[j-1]和array[j]
+                if (comparator.compare(array[j - 1], array[j]) > 0) {
+                    swap(array, j - 1, j);
                 }
             }
-            swap(array, i, minIndex);
         }
     }
 
@@ -59,11 +56,11 @@ public class SelectionSort {
                 new Person(4, "lucy"),
                 new Person(1, "lily"),
                 new Person(4, "white")};
-        new SelectionSort().sort(array, Comparator.comparing(Person::getAge));
+        new BubbleSort().sort(array, Comparator.comparing(Person::getAge));
         System.out.println(Arrays.toString(array));
 
-        // [[name: lily, age: 1], [name: tom, age: 2], [name: lucy, age: 4], [name: jim, age: 4], [name: white, age: 4]]
-        // 对比结果可知，排序后age=4的三人顺序被打乱，所以选择排序不是稳定排序算法
+        // [[name: lily, age: 1], [name: tom, age: 2], [name: jim, age: 4], [name: lucy, age: 4], [name: white, age: 4]]
+        // 对比结果可知，排序后age=4的三人顺序未变，所以冒泡排序是稳定排序算法
     }
 
 }
