@@ -21,9 +21,15 @@ public class Heap<E> {
         this.comparator = comparator;
     }
 
+    public Heap(E[] array, Comparator<E> comparator) {
+        this.comparator = comparator;
+        heapify(array);
+        this.data = new ArrayList<>(Arrays.asList(array));
+    }
+
     /**
      * 堆化
-     *
+     * 时间复杂度O(n)
      * @param array
      */
     public void heapify(E[] array) {
@@ -120,6 +126,9 @@ public class Heap<E> {
     public E removeTop() {
         E top = getTop();
         E tailElement = this.data.remove(getSize() - 1);
+        if (isEmpty()) {
+            return top;
+        }
         this.data.set(0, tailElement);
         siftDown(0);
         return top;
