@@ -51,11 +51,11 @@ public class BubbleSort {
                 return "[name: " + name + ", age: " + age + "]";
             }
         }
-        Person[] array = {new Person(4, "jim"),
-                new Person(2, "tom"),
-                new Person(4, "lucy"),
-                new Person(1, "lily"),
-                new Person(4, "white")};
+        Person[] array = {new Person(4, "吉姆"),
+                new Person(2, "汤姆"),
+                new Person(4, "露西"),
+                new Person(1, "莉莉"),
+                new Person(4, "怀特")};
         new BubbleSort().sort(array, Comparator.comparing(Person::getAge));
         System.out.println(Arrays.toString(array));
 
