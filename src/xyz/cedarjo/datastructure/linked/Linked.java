@@ -40,6 +40,23 @@ public class Linked<E> {
         return this.size == 0;
     }
 
+    /**
+     * 链表中是否有环<br/>
+     * 快慢指针：如果有环，则快指针一定会追上慢指针
+     */
+    public boolean isCircle() {
+        Node faster, slower;
+        faster = slower = dummyHead.next;
+        while (faster != null && faster.next != null) {
+            faster = faster.next.next;
+            slower = slower.next;
+            if (faster == slower) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void add(int index, E e) {
         // index 范围[0, size]
         if (!(index >= 0 && index <= this.size)) {
@@ -159,8 +176,7 @@ public class Linked<E> {
 
     public void swap(int indexA, int indexB) {
         // index 范围[0, size)
-        if (!(indexA >= 0 && indexA < size
-                && indexB >= 0 && indexB < size)) {
+        if (!(indexA >= 0 && indexA < size && indexB >= 0 && indexB < size)) {
             throw new IllegalArgumentException("越界");
         }
         if (indexA == indexB) {
