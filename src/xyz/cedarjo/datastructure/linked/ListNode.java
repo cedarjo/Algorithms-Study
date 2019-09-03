@@ -24,4 +24,25 @@ public class ListNode<E> {
     public void setNext(ListNode<E> next) {
         this.next = next;
     }
+
+    public String show() {
+        StringBuilder str = new StringBuilder();
+        ListNode<E> header = this;
+        while (header != null) {
+            str.append(header.getE()).append(" -> ");
+            header = header.next;
+        }
+        str.append("NULL");
+        return str.toString();
+    }
+
+    public static <T> ListNode<T> initTestLinked(T... array) {
+        ListNode<T> dummyHeader = new ListNode<>(null, null);
+        ListNode<T> curNode = dummyHeader;
+        for (T var : array) {
+            curNode.setNext(new ListNode(var, null));
+            curNode = curNode.getNext();
+        }
+        return dummyHeader.getNext();
+    }
 }
