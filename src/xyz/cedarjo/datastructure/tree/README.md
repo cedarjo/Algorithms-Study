@@ -3,6 +3,8 @@
 链表
 ## Binary Tree
 二叉树
+## Heap
+堆
 ## AVL Tree
 AVL树
 ## Red Black Tree
