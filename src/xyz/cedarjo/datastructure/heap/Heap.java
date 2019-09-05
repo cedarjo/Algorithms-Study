@@ -4,15 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 
-public class Heap<E> {
+import xyz.cedarjo.datastructure.tree.binary.ArrayBinaryTree;
 
-    // 基于动态数组存储，从0开始存储
-    /**
-     * ****0
-     * **1   2
-     * *3 4 5 6
-     */
-    private ArrayList<E> data;
+public class Heap<E> extends ArrayBinaryTree<E> {
 
     private Comparator<E> comparator;
 
@@ -28,8 +22,8 @@ public class Heap<E> {
     }
 
     /**
-     * 堆化
-     * 时间复杂度O(n)
+     * 堆化 时间复杂度O(n)
+     * 
      * @param array
      */
     public void heapify(E[] array) {
@@ -37,8 +31,7 @@ public class Heap<E> {
             int index = i;
             while (leftSon(index) < array.length) {
                 int son = leftSon(index);
-                if (rightSon(index) < array.length
-                        && this.comparator.compare(array[rightSon(index)], array[son]) > 0) {
+                if (rightSon(index) < array.length && this.comparator.compare(array[rightSon(index)], array[son]) > 0) {
                     son = rightSon(index);
                 }
 
@@ -53,26 +46,6 @@ public class Heap<E> {
                 index = son;
             }
         }
-    }
-
-    public int getSize() {
-        return this.data.size();
-    }
-
-    public boolean isEmpty() {
-        return this.data.isEmpty();
-    }
-
-    private int leftSon(int parent) {
-        return (parent << 1) + 1;
-    }
-
-    private int rightSon(int parent) {
-        return leftSon(parent) + 1;
-    }
-
-    private int parent(int son) {
-        return (son - 1) >> 1;
     }
 
     private void siftUp(int index) {
@@ -153,7 +126,7 @@ public class Heap<E> {
         heap.removeTop();
         System.out.println(heap.data);
 
-        Integer[] array = {1, 6, 2, 8, 3, 5, 9, 0, 7, 4};
+        Integer[] array = { 1, 6, 2, 8, 3, 5, 9, 0, 7, 4 };
         heap.heapify(array);
         System.out.println(Arrays.toString(array));
     }

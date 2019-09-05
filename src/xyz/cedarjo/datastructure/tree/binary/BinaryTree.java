@@ -31,27 +31,29 @@ public interface BinaryTree<E> {
     /**
      * 前序遍历
      * 
-     * @return
+     * @param orders
      */
-    List<E> preOrder();
+    void preOrder(List<E> orders);
 
     /**
      * 中序遍历
      * 
-     * @return
+     * @param orders
      */
-    List<E> inOrder();
+    void inOrder(List<E> orders);
 
     /**
      * 后序遍历
+     * 
+     * @param orders
      */
-    List<E> postOrder();
+    void postOrder(List<E> orders);
 
     /**
      * 层序遍历
      * 
-     * @return
+     * @param orders
      */
-    List<E> levelOrder();
+    void levelOrder(List<E> orders);
 
 }
