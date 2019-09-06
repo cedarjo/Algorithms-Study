@@ -1,8 +1,10 @@
 package xyz.cedarjo.datastructure.tree.binary;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 public class LinkedBinaryTree<E> implements BinaryTree<E> {
 
@@ -62,11 +64,26 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
 
     @Override
     public int getDepth() {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void preOrder(List<E> orders) {
+        if (dummyRoot.left == null) {
+            return;
+        }
+        LinkedList<Node> stack = new LinkedList<>();
+        stack.push(dummyRoot.left);
+        while (!stack.isEmpty()) {
+            Node top = stack.pop();
+            orders.add(top.e);
+            if (top.right != null) {
+                stack.push(top.right);
+            }
+            if (top.left != null) {
+                stack.push(top.left);
+            }
+        }
 
     }
 
@@ -83,10 +100,65 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
         preOrderRecursive(node.right, orders);
     }
 
+    private enum Action {
+        VISIT, PRINT
+    }
+
+    private class Msg {
+        private Node node;
+        private Action action;
+
+        Msg(Node node, Action action) {
+            this.node = node;
+            this.action = action;
+        }
+    }
+
+    public void preOrderWithMsg(List<E> orders) {
+        if (dummyRoot.left == null) {
+            return;
+        }
+        LinkedList<Msg> stack = new LinkedList<>();
+        stack.push(new Msg(dummyRoot.left, Action.VISIT));
+        while (!stack.isEmpty()) {
+            Msg msg = stack.pop();
+            if (Action.PRINT == msg.action) {
+                orders.add(msg.node.e);
+            } else {
+                // 入栈顺序：右左中
+                if (msg.node.right != null) {
+                    stack.push(new Msg(msg.node.right, Action.VISIT));
+                }
+                if (msg.node.left != null) {
+                    stack.push(new Msg(msg.node.left, Action.VISIT));
+                }
+                stack.push(new Msg(msg.node, Action.PRINT));
+            }
+        }
+    }
+
     @Override
     public void inOrder(List<E> orders) {
-        // TODO Auto-generated method stub
-
+        if (dummyRoot.left == null) {
+            return;
+        }
+        LinkedList<Node> stack = new LinkedList<>();
+        Node cur = dummyRoot.left;
+        while (cur != null) {
+            stack.push(cur);
+            cur = cur.left;
+        }
+        while (!stack.isEmpty()) {
+            Node pop = stack.pop();
+            orders.add(pop.e);
+            if (pop.right != null) {
+                cur = pop.right;
+                while (cur != null) {
+                    stack.push(cur);
+                    cur = cur.left;
+                }
+            }
+        }
     }
 
     public void inOrderRecursive(List<E> orders) {
@@ -102,10 +174,57 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
         inOrderRecursive(node.right, orders);
     }
 
+    public void inOrderWithMsg(List<E> orders) {
+        if (dummyRoot.left == null) {
+            return;
+        }
+        LinkedList<Msg> stack = new LinkedList<>();
+        stack.push(new Msg(dummyRoot.left, Action.VISIT));
+        while (!stack.isEmpty()) {
+            Msg msg = stack.pop();
+            if (Action.PRINT == msg.action) {
+                orders.add(msg.node.e);
+            } else {
+                // 入栈顺序：右中左
+                if (msg.node.right != null) {
+                    stack.push(new Msg(msg.node.right, Action.VISIT));
+                }
+                stack.push(new Msg(msg.node, Action.PRINT));
+                if (msg.node.left != null) {
+                    stack.push(new Msg(msg.node.left, Action.VISIT));
+                }
+            }
+        }
+    }
+
     @Override
     public void postOrder(List<E> orders) {
-        // TODO Auto-generated method stub
-
+        Set<Node> visitRight = new HashSet<>();
+        LinkedList<Node> stack = new LinkedList<>();
+        Node cur = dummyRoot.left;
+        while (cur != null) {
+            stack.push(cur);
+            cur = cur.left;
+        }
+        while (!stack.isEmpty()) {
+            Node peek = stack.peek();
+            if (visitRight.contains(peek)) {
+                // 已经访问了右，该访问元素了
+                orders.add(peek.e);
+                stack.pop();
+                visitRight.remove(peek);
+            } else {
+                // 还没访问右
+                if (peek.right != null) {
+                    cur = peek.right;
+                    while (cur != null) {
+                        stack.push(cur);
+                        cur = cur.left;
+                    }
+                }
+                visitRight.add(peek);
+            }
+        }
     }
 
     public void postOrderRecursive(List<E> orders) {
@@ -119,6 +238,29 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
         postOrderRecursive(node.left, orders);
         postOrderRecursive(node.right, orders);
         orders.add(node.e);
+    }
+
+    public void postOrderWithMsg(List<E> orders) {
+        if (dummyRoot.left == null) {
+            return;
+        }
+        LinkedList<Msg> stack = new LinkedList<>();
+        stack.push(new Msg(dummyRoot.left, Action.VISIT));
+        while (!stack.isEmpty()) {
+            Msg msg = stack.pop();
+            if (Action.PRINT == msg.action) {
+                orders.add(msg.node.e);
+            } else {
+                // 入展顺序：中右左
+                stack.push(new Msg(msg.node, Action.PRINT));
+                if (msg.node.right != null) {
+                    stack.push(new Msg(msg.node.right, Action.VISIT));
+                }
+                if (msg.node.left != null) {
+                    stack.push(new Msg(msg.node.left, Action.VISIT));
+                }
+            }
+        }
     }
 
     @Override
@@ -144,18 +286,39 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
         LinkedBinaryTree<Integer> bTree = new LinkedBinaryTree<>();
         bTree.initTestData(new Integer[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
         List<Integer> orders = new ArrayList<>();
+
         bTree.preOrderRecursive(orders);
         System.out.println("preOrder: " + orders);
         orders.clear();
-        bTree.inOrderRecursive(orders);
-        System.out.println("inOrder: " + orders);
+        bTree.preOrder(orders);
+        System.out.println("preOrder: " + orders);
         orders.clear();
-        bTree.postOrderRecursive(orders);
-        System.out.println("postOrder: " + orders);
+        bTree.preOrderWithMsg(orders);
+        System.out.println("preOrder: " + orders);
         orders.clear();
+
+        // bTree.inOrderRecursive(orders);
+        // System.out.println("inOrder: " + orders);
+        // orders.clear();
+        // bTree.inOrder(orders);
+        // System.out.println("inOrder: " + orders);
+        // orders.clear();
+        // bTree.inOrderWithMsg(orders);
+        // System.out.println("inOrder: " + orders);
+        // orders.clear();
+
+        // bTree.postOrderRecursive(orders);
+        // System.out.println("postOrder: " + orders);
+        // orders.clear();
+        // bTree.postOrder(orders);
+        // System.out.println("postOrder: " + orders);
+        // orders.clear();
+        // bTree.postOrderWithMsg(orders);
+        // System.out.println("postOrder: " + orders);
+        // orders.clear();
+
         bTree.levelOrder(orders);
         System.out.println("levelOrder: " + orders);
-        System.out.println("depth: " + bTree.getDepth());
     }
 
 }
