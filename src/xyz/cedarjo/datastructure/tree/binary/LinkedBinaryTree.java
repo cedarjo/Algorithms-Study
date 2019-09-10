@@ -251,7 +251,7 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
             if (Action.PRINT == msg.action) {
                 orders.add(msg.node.e);
             } else {
-                // 入展顺序：中右左
+                // 入栈顺序：中右左
                 stack.push(new Msg(msg.node, Action.PRINT));
                 if (msg.node.right != null) {
                     stack.push(new Msg(msg.node.right, Action.VISIT));
