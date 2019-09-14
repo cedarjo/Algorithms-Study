@@ -20,8 +20,16 @@ public class BinarySearchTree<E> extends LinkedBinaryTree<E> {
         insertNonRecursive(e);
     }
 
+    /**
+     * 递归的方式为指定子树新增元素
+     * 
+     * @param node 指定子树的根节点
+     * @param e
+     * @return 新增完元素后子树的根节点
+     */
     private Node insert(Node node, E e) {
         if (node == null) {
+            this.size++;
             return new Node(e, null, null);
         }
         if (this.comparator.compare(e, node.e) <= 0) {
@@ -32,6 +40,11 @@ public class BinarySearchTree<E> extends LinkedBinaryTree<E> {
         return node;
     }
 
+    /**
+     * 非递归的方式新增元素
+     * 
+     * @param e
+     */
     private void insertNonRecursive(E e) {
         Node parent = dummyRoot;
         Node son = dummyRoot.left;
@@ -52,44 +65,251 @@ public class BinarySearchTree<E> extends LinkedBinaryTree<E> {
         } else {
             parent.left = new Node(e, null, null);
         }
+        this.size++;
     }
 
-    public boolean comtains(E e) {
+    public boolean contains(E e) {
+        // return contains(dummyRoot.left, e);
+        return containsNonRecursive(e);
+    }
+
+    /**
+     * 递归的方式判断指定子树中是否存在元素
+     * 
+     * @param node 指定子树的根节点
+     * @param e
+     * @return
+     */
+    private boolean contains(Node node, E e) {
+        if (node == null) {
+            return false;
+        }
+        int compare = this.comparator.compare(e, node.e);
+        if (compare == 0) {
+            return true;
+        }
+        if (compare < 0) {
+            return contains(node.left, e);
+        }
+        return contains(node.right, e);
+    }
+
+    /**
+     * 非递归的方式判断是否存在元素
+     * 
+     * @param e
+     * @return
+     */
+    private boolean containsNonRecursive(E e) {
+        Node cur = dummyRoot.left;
+        while (cur != null) {
+            int compare = this.comparator.compare(e, cur.e);
+            if (compare == 0) {
+                return true;
+            }
+            if (compare < 0) {
+                cur = cur.left;
+            } else {// compare > 0
+                cur = cur.right;
+            }
+        }
         return false;
     }
 
+    /**
+     * 二分搜索树的最大元素
+     * 
+     * @return
+     */
     public E maximum() {
-        return null;
+        Node maximumNode = maximumNode(dummyRoot.left);
+        return maximumNode == null ? null : maximumNode.e;
     }
 
+    /**
+     * 指定子树的最大节点
+     * 
+     * @param node
+     * @return
+     */
+    private Node maximumNode(Node node) {
+        if (node == null) {
+            return null;
+        }
+        // 一路向右
+        while (node.right != null) {
+            node = node.right;
+        }
+        return node;
+    }
+
+    /**
+     * 二分搜索树的最小元素
+     * 
+     * @return
+     */
     public E minimum() {
-        return null;
+        Node minimumNode = minimumNode(dummyRoot.left);
+        return minimumNode == null ? null : minimumNode.e;
     }
 
+    /**
+     * 指定子树的最小节点
+     * 
+     * @param node
+     * @return
+     */
+    private Node minimumNode(Node node) {
+        if (node == null) {
+            return null;
+        }
+        // 一路向左
+        while (node.left != null) {
+            node = node.left;
+        }
+        return node;
+    }
+
+    /**
+     * 移除最小
+     */
     public void removeMin() {
-
+        dummyRoot.left = removeMin(dummyRoot.left);
     }
 
+    /**
+     * 移除指定子树的最小
+     * 
+     * @param node 指定子树的根结点
+     * @return 移除最小后子树的根节点
+     */
+    private Node removeMin(Node node) {
+        if (node == null) {
+            return null;
+        }
+        Node dummyHead = new Node(null, node, null);
+        Node parent = dummyHead;
+        Node leftSon = parent.left;
+        while (leftSon.left != null) {
+            parent = leftSon;
+            leftSon = leftSon.left;
+        }
+        // 将最小节点的右子节点赋值为最小节点的父节点的左子节点
+        parent.left = leftSon.right;
+        leftSon.right = null; // gc
+        this.size--;
+        return dummyHead.left;
+    }
+
+    /**
+     * 移除最大
+     */
     public void removeMax() {
-
+        dummyRoot.left = removeMax(dummyRoot.left);
     }
 
-    public void remove(E e) {
+    /**
+     * 移除指定子树的最大
+     * 
+     * @param node 指定子树的根结点
+     * @return 移除最大后子树的根节点
+     */
+    private Node removeMax(Node node) {
+        if (node == null) {
+            return null;
+        }
+        Node dummyHead = new Node(null, node, null);
+        Node parent = dummyHead;
+        Node rightSon = parent.left;
+        while (rightSon.right != null) {
+            parent = rightSon;
+            rightSon = rightSon.right;
+        }
+        // 将最大节点的左子节点赋值为最大节点的父节点的右子节点
+        parent.right = rightSon.left;
+        rightSon.left = null; // gc
+        this.size--;
+        return dummyHead.left;
+    }
 
+    /**
+     * 移除指定元素
+     * 
+     * @param e
+     */
+    public void remove(E e) {
+        Node parent = dummyRoot;
+        Node son = dummyRoot.left;
+        int compare = 0;
+        boolean direct = false; // false表示son是parent的左子节点
+        while (son != null && (compare = this.comparator.compare(e, son.e)) != 0) {
+            // 找的过程
+            if (compare < 0) {
+                direct = false;
+                parent = son;
+                son = son.left;
+            } else {
+                direct = true;
+                parent = son;
+                son = son.right;
+            }
+        }
+        if (son == null) {
+            // 没找到
+            return;
+        }
+        // 找到了
+        if (son.right == null) {
+            if (direct) {
+                parent.right = son.left;
+            } else {
+                parent.left = son.left;
+            }
+            son.left = null; // gc
+            this.size--;
+            // 这里也可以从左子树中移除最大节点，并将最大节点替换目标节点
+        } else {
+            // 从右子树中移除最小节点，并将最小节点替换目标节点
+            Node replace = minimumNode(son.right);
+            son.right = removeMin(son.right);
+            if (direct) {
+                parent.right = replace;
+            } else {
+                parent.left = replace;
+            }
+            replace.left = son.left;
+            replace.right = son.right;
+            son.left = null; // gc
+            son.right = null; // gc
+        }
     }
 
     public static void main(String[] args) {
         BinarySearchTree<Integer> bst = new BinarySearchTree<Integer>(Comparator.naturalOrder());
         bst.insert(5);
+        System.out.println(bst.getSize());
         bst.insert(6);
         bst.insert(2);
+        System.out.println(bst.getSize());
         bst.insert(0);
         bst.insert(3);
+        System.out.println(bst.getSize());
         bst.insert(4);
         bst.insert(1);
+        System.out.println("maximum : " + bst.maximum());
+        System.out.println("minimum : " + bst.minimum());
+        bst.removeMax();
+        System.out.println(bst.getSize());
+        bst.removeMin();
+        System.out.println(bst.getSize());
+        bst.remove(5);
+        bst.remove(3);
+
         List<Integer> orders = new ArrayList<>();
         bst.levelOrder(orders);
         System.out.println(orders);
+        System.out.println(bst.contains(4));
+        System.out.println(bst.contains(7));
     }
 
 }
