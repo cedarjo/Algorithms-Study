@@ -69,8 +69,8 @@ public class BinarySearchTree<E> extends LinkedBinaryTree<E> {
     }
 
     public boolean contains(E e) {
-        // return contains(dummyRoot.left, e);
-        return containsNonRecursive(e);
+        // return contains(dummyRoot.left, e) != null;
+        return containsNonRecursive(e) != null;
     }
 
     /**
@@ -80,13 +80,13 @@ public class BinarySearchTree<E> extends LinkedBinaryTree<E> {
      * @param e
      * @return
      */
-    private boolean contains(Node node, E e) {
+    private Node contains(Node node, E e) {
         if (node == null) {
-            return false;
+            return null;
         }
         int compare = this.comparator.compare(e, node.e);
         if (compare == 0) {
-            return true;
+            return node;
         }
         if (compare < 0) {
             return contains(node.left, e);
@@ -100,12 +100,12 @@ public class BinarySearchTree<E> extends LinkedBinaryTree<E> {
      * @param e
      * @return
      */
-    private boolean containsNonRecursive(E e) {
+    private Node containsNonRecursive(E e) {
         Node cur = dummyRoot.left;
         while (cur != null) {
             int compare = this.comparator.compare(e, cur.e);
             if (compare == 0) {
-                return true;
+                return cur;
             }
             if (compare < 0) {
                 cur = cur.left;
@@ -113,7 +113,7 @@ public class BinarySearchTree<E> extends LinkedBinaryTree<E> {
                 cur = cur.right;
             }
         }
-        return false;
+        return null;
     }
 
     /**
@@ -284,6 +284,94 @@ public class BinarySearchTree<E> extends LinkedBinaryTree<E> {
         }
     }
 
+    /**
+     * 前驱元素
+     * 
+     * @param e
+     * @return
+     */
+    public E predecessor(E e) {
+        Node predecessorNode = predecessor(containsNonRecursive(e));
+        return predecessorNode == null ? null : predecessorNode.e;
+    }
+
+    /**
+     * 指定节点的前驱节点
+     * 
+     * @param node
+     * @return
+     */
+    private Node predecessor(Node node) {
+        if (node == null) {
+            return null;
+        }
+        return maximumNode(node.left);
+    }
+
+    /**
+     * 后继元素
+     * 
+     * @param e
+     * @return
+     */
+    public E successor(E e) {
+        Node successorNode = successor(containsNonRecursive(e));
+        return successorNode == null ? null : successorNode.e;
+    }
+
+    /**
+     * 指定节点的后继节点
+     * 
+     * @param node
+     * @return
+     */
+    private Node successor(Node node) {
+        if (node == null) {
+            return null;
+        }
+        return minimumNode(node.right);
+    }
+
+    /**
+     * 比指定元素小的最大元素
+     * 
+     * @param e
+     * @return
+     */
+    public E floor(E e) {
+        return null;
+    }
+
+    /**
+     * 比指定元素小的最大节点
+     * 
+     * @param e
+     * @return
+     */
+    private Node floorNode(E e) {
+        return null;
+    }
+
+    /**
+     * 比指定元素大的最小元素
+     * 
+     * @param e
+     * @return
+     */
+    public E ceil(E e) {
+        return null;
+    }
+
+    /**
+     * 比指定元素大的最小节点
+     * 
+     * @param e
+     * @return
+     */
+    private Node ceilNode(E e) {
+        return null;
+    }
+
     public static void main(String[] args) {
         BinarySearchTree<Integer> bst = new BinarySearchTree<Integer>(Comparator.naturalOrder());
         bst.insert(5);
@@ -298,18 +386,21 @@ public class BinarySearchTree<E> extends LinkedBinaryTree<E> {
         bst.insert(1);
         System.out.println("maximum : " + bst.maximum());
         System.out.println("minimum : " + bst.minimum());
-        bst.removeMax();
-        System.out.println(bst.getSize());
-        bst.removeMin();
-        System.out.println(bst.getSize());
-        bst.remove(5);
-        bst.remove(3);
 
-        List<Integer> orders = new ArrayList<>();
-        bst.levelOrder(orders);
-        System.out.println(orders);
-        System.out.println(bst.contains(4));
-        System.out.println(bst.contains(7));
+        System.out.println("the predecessor of 2 is " + bst.predecessor(2));
+        System.out.println("the successor of 2 is " + bst.successor(2));
+        // bst.removeMax();
+        // System.out.println(bst.getSize());
+        // bst.removeMin();
+        // System.out.println(bst.getSize());
+        // bst.remove(5);
+        // bst.remove(3);
+
+        // List<Integer> orders = new ArrayList<>();
+        // bst.levelOrder(orders);
+        // System.out.println(orders);
+        // System.out.println(bst.contains(4));
+        // System.out.println(bst.contains(7));
     }
 
 }
