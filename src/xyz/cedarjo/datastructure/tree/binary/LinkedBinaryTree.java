@@ -10,9 +10,9 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
 
     protected class Node {
 
-        private E e;
-        private Node left;
-        private Node right;
+        protected E e;
+        protected Node left;
+        protected Node right;
 
         public Node() {
             this(null, null, null);
