@@ -372,35 +372,63 @@ public class BinarySearchTree<E> extends LinkedBinaryTree<E> {
         return null;
     }
 
+    /**
+     * 指定元素的排名（最小元素排名为1）
+     * 
+     * @param e
+     * @return
+     */
+    public int rank(E e) {
+        return 0;
+    }
+
+    /**
+     * 指定节点的排名（最小元素排名为1）
+     * 
+     * @param node
+     * @return
+     */
+    private int rankNode(Node node) {
+        return 0;
+    }
+
+    /**
+     * 指定排名的元素（排名为1的元素为minimum）
+     * 
+     * @param rank
+     * @return
+     */
+    public E select(int rank) {
+        return null;
+    }
+
+    /**
+     * 指定排名的节点（排名为1的节点为minimumNode）
+     * 
+     * @param rank
+     * @return
+     */
+    private Node selectNode(int rank) {
+        return null;
+    }
+
     public static void main(String[] args) {
         BinarySearchTree<Integer> bst = new BinarySearchTree<Integer>(Comparator.naturalOrder());
-        bst.insert(5);
+        bst.insert(50);
         System.out.println(bst.getSize());
-        bst.insert(6);
-        bst.insert(2);
+        bst.insert(60);
+        bst.insert(20);
         System.out.println(bst.getSize());
         bst.insert(0);
-        bst.insert(3);
+        bst.insert(30);
         System.out.println(bst.getSize());
-        bst.insert(4);
-        bst.insert(1);
+        bst.insert(40);
+        bst.insert(10);
         System.out.println("maximum : " + bst.maximum());
         System.out.println("minimum : " + bst.minimum());
 
-        System.out.println("the predecessor of 2 is " + bst.predecessor(2));
-        System.out.println("the successor of 2 is " + bst.successor(2));
-        // bst.removeMax();
-        // System.out.println(bst.getSize());
-        // bst.removeMin();
-        // System.out.println(bst.getSize());
-        // bst.remove(5);
-        // bst.remove(3);
-
-        // List<Integer> orders = new ArrayList<>();
-        // bst.levelOrder(orders);
-        // System.out.println(orders);
-        // System.out.println(bst.contains(4));
-        // System.out.println(bst.contains(7));
+        System.out.println("the predecessor of 20 is " + bst.predecessor(20));
+        System.out.println("the successor of 20 is " + bst.successor(20));
     }
 
 }
